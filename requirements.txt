@@ -37,10 +37,8 @@ nbconvert==6.0.2
 nbformat==5.0.7
 nest-asyncio==1.4.0
 notebook==6.1.4
-numpy==1.19.2
 opt-einsum==3.3.0
 packaging==20.4
-pandas==1.1.2
 pandocfilters==1.4.2
 parso==0.7.1
 pexpect==4.8.0
@@ -53,7 +51,6 @@ pycparser==2.20
 Pygments==2.7.0
 pyparsing==2.4.7
 pyro-api==0.1.2
-pyro-ppl==1.4.0
 pyrsistent==0.16.0
 python-dateutil==2.8.1
 pytz==2020.1
@@ -61,13 +58,11 @@ pyzmq==19.0.2
 qtconsole==4.7.7
 QtPy==1.9.0
 requests==2.24.0
-scipy==1.5.2
 seaborn==0.11.0
 Send2Trash==1.5.0
 six==1.15.0
 terminado==0.8.3
 testpath==0.4.4
-torch==1.6.0
 tornado==6.0.4
 tqdm==4.49.0
 traitlets==5.0.4
@@ -98,13 +93,6 @@ folium == 0.11.0
 # probprog-finalproject/data/process_accident.py: 12
 # probprog-finalproject/data/process_intersection.py: 3
 geopandas == 0.8.1
-
-# probprog-finalproject/data/.ipynb_checkpoints/exploratory_maps-checkpoint.ipynb: 5,6
-# probprog-finalproject/helper_functions/ppc.py: 15
-# probprog-finalproject/test_notebooks/.ipynb_checkpoints/final_notebook-checkpoint.ipynb: 14
-# probprog-finalproject/test_notebooks/.ipynb_checkpoints/my_final_note-checkpoint.ipynb: 13
-# probprog-finalproject/test_notebooks/my_final_note.ipynb: 13
-matplotlib == 3.1.2
 
 # probprog-finalproject/data/.ipynb_checkpoints/Untitled-checkpoint.ipynb: 1
 # probprog-finalproject/data/.ipynb_checkpoints/exploratory_maps-checkpoint.ipynb: 1
