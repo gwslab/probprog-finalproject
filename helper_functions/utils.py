@@ -2,7 +2,6 @@
 import numpy as np
 import pyro.distributions as dist
 from pyro.distributions import TorchDistribution
-from torch.distributions.utils import broadcast_all
 from pyro.distributions.torch import MultivariateNormal
 import torch
 from numbers import Number

@@ -1,7 +1,4 @@
-import numpy as np
 import pandas as pd
-import math
-import datetime
 
 
 def process(location_name, columns, start_date):

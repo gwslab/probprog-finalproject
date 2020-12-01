@@ -1,14 +1,8 @@
 import numpy as np
 import pandas as pd
-import geopandas as gpd
-import shapely.geometry as geom
 import data_utils as utils
-import time
-import reverse_geocoder as rg
-import importlib
 import osmnx as ox
 import re
-import math
 
 
 def process_aadt():
@@ -149,7 +143,6 @@ def match_road_to_node():
 
     data["Count_mean"] = data[cols].mean(axis=1)
     cols.append("Count_mean")
-    display(data.head())
     for col in cols:
         nodes_roads_data[col] = []
 

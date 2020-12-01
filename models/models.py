@@ -3,8 +3,9 @@ import pyro
 import pyro.optim as optim
 import pyro.distributions as dist
 from pyro import plate
-from pyro.infer import config_enumerate, TraceEnum_ELBO, Trace_ELBO, SVI
+from pyro.infer import config_enumerate, Trace_ELBO, SVI
 import numpy as np
+from pyro.ops.indexing import Vindex
 import predictors
 import pyro.contrib.autoguide as autoguide
 import random
@@ -132,12 +133,16 @@ def train_with_random_init(
     lr=1,
 ):
     """
-    Trains model with guide initialized from the best of a sample of random initialization points. Kappa t_0 are parameters discussd in class
+    Trains model with guide initialized from the best of a sample of random
+    initialization points. Kappa t_0 are parameters discussed in class
     Returns list with losses
     """
     optimizer = torch.optim.Adam
 
-    l1 = lambda x: 1 / ((t_0 + x) ** kappa)
+    def clr(x):
+        return 1 / ((t_0 + x) ** kappa)
+
+    l1 = clr
     optim_args = {"lr": lr}
     optim_params = {
         "optimizer": optimizer,
@@ -190,7 +195,10 @@ def train(
     pyro.clear_param_store()
     optimizer = torch.optim.Adam
 
-    l1 = lambda x: 1 / ((t_0 + x) ** kappa)
+    def clr(x):
+        return 1 / ((t_0 + x) ** kappa)
+
+    l1 = clr
     optim_args = {"lr": lr}
     optim_params = {
         "optimizer": optimizer,

@@ -1,13 +1,11 @@
 """
-Class to get functions from the posterior. 
-Was copied from tutorials. 
+Class to get functions from the posterior.
+Was copied from tutorials.
 We used this becuase pyro's version seemed to have a bug
 """
 
-from collections import defaultdict
 from pyro import poutine
 from pyro.poutine.util import prune_subsample_sites
-import warnings
 import torch
 
 

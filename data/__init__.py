@@ -1,7 +1,7 @@
 import predictors
 import pandas as pd
 import numpy as np
-from constants import *
+from constants import FIRST_DAY, NUM_DAYS
 
 
 def get_accidents(df):

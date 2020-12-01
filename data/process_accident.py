@@ -4,13 +4,7 @@ import osmnx as ox
 from pandarallel import pandarallel
 from sklearn.neighbors import KDTree
 import shapely.geometry as geom
-import data_utils as utils
-import time
-import reverse_geocoder as rg
-import importlib
-import re
 import geopandas as gpd
-import math
 
 
 def populate_nearest_node(row):

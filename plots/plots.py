@@ -1,10 +1,5 @@
-import sys
-
-sys.path.insert(1, "../")
-
-from folium.plugins import FastMarkerCluster, HeatMap
+from folium.plugins import HeatMap
 import folium
-import matplotlib.patches as mpatches
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -13,8 +8,7 @@ import seaborn as sns
 import scipy
 import matplotlib.pyplot as plt
 
-import datetime
-import constants
+from .. import constants
 
 accident_filename = "../data/accident/processed/manhattan.csv"
 node_filename = "../data/intersection/processed/data.csv"
@@ -83,7 +77,6 @@ def plot_mean_variance_line(data_mat):
     """
     Plots variances across sites
     """
-    selection = np.var(data_mat, axis=1)
     fig, ax = plt.subplots(1, 2, figsize=(12, 4))
     sns.kdeplot(np.var(data_mat, axis=1), ax=ax[0])
     ax[0].set_xlabel("Variance")
