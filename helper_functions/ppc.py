@@ -34,12 +34,16 @@ def compute_mean_difference(data, selector, axis):
     else:
         sel = data[selected_idx, :]
         unsel = data[unselected_idx, :]
-    selected_means = np.sum(sel, axis = axis)/len(selected_idx)
-    unselected_means = np.sum(unsel, axis = axis)/len(unselected_idx)
+    selected_means = np.sum(sel, axis=axis) / len(selected_idx)
+    unselected_means = np.sum(unsel, axis=axis) / len(unselected_idx)
     return np.squeeze(selected_means - unselected_means)
 
+
 def compute_mean_sample_mean_difference(data, selector, axis):
-    return compute_mean_difference(np.sum(data, axis=0)/data.shape[0], selector, axis)
+    return compute_mean_difference(
+        np.sum(data, axis=0) / data.shape[0], selector, axis
+    )
+
 
 def plot_mean_difference(data, selector, axis, title):
     ax = plt.subplot()
@@ -47,19 +51,26 @@ def plot_mean_difference(data, selector, axis, title):
     ax.set_xlabel("Differences of means")
     ax.set_title(title)
 
-def plot_skew(samples, data, selector, axis,title):
+
+def plot_skew(samples, data, selector, axis, title):
     actual_skew = skew(compute_mean_difference(data, selector, axis))
     skews = np.zeros((len(samples)))
     for i, sample in enumerate(samples):
-        skews[i] = skew(compute_mean_difference(sample.detach().numpy(), selector, axis))
+        skews[i] = skew(
+            compute_mean_difference(sample.detach().numpy(), selector, axis)
+        )
 
     ax = plt.subplot()
     sns.kdeplot(skews, ax=ax)
-    ax.scatter(x=[actual_skew], y=[0.0], c='r',s=100, label='Skewness for real dataset')
-    ax.set_xlabel('Skewness')
+    ax.scatter(
+        x=[actual_skew],
+        y=[0.0],
+        c="r",
+        s=100,
+        label="Skewness for real dataset",
+    )
+    ax.set_xlabel("Skewness")
     ax.set_title(title)
-
-
 
 
 def plot_max(samples, train_mat, num_max=10):
@@ -86,7 +97,7 @@ def plot_max(samples, train_mat, num_max=10):
     return ax
 
 
-def plot_total_distributions(samples, train_mat, shape,subset = 4): 
+def plot_total_distributions(samples, train_mat, shape, subset=4):
     """
     Plots the  histplot of the total crashes per site on selected sites alongside real values.
 
@@ -101,15 +112,19 @@ def plot_total_distributions(samples, train_mat, shape,subset = 4):
     fig
     """
     num_sites = len(train_mat)
-    subset= torch.distributions.Categorical(torch.ones(subset, num_sites)/num_sites).sample()
-    
+    subset = torch.distributions.Categorical(
+        torch.ones(subset, num_sites) / num_sites
+    ).sample()
+
     to_plot = [np.sum(samples[:, i], axis=-1) for i in subset]
     real_total = np.sum(train_mat[subset], axis=-1)
 
     fig, axs = plt.subplots(
         nrows=shape[0], ncols=shape[1], figsize=(shape[1] * 4, 3 * shape[0])
     )
-    fig.suptitle("Total crash posterior predictive distribution over period of time at random sites")
+    fig.suptitle(
+        "Total crash posterior predictive distribution over period of time at random sites"
+    )
     for i in range(len(axs)):
         for j in range(len(axs[0])):
             sns.histplot(
@@ -155,7 +170,7 @@ def plot_time_trend(samples, train_mat, window=61, polynomial=3):
     colors = ["r", "g", "b"]
     real = signal.savgol_filter(np.sum(train_mat, axis=0), window, polynomial)
     time = range(len(real))
-    fig, ax = plt.subplots(figsize=(13, 5),dpi=250)
+    fig, ax = plt.subplots(figsize=(13, 5), dpi=250)
     ax.plot(time, real, c="black", label="Original dataset")
     for i in range(int(len(quantiles_to_observe) / 2)):
         alpha = quantiles_to_observe[i]

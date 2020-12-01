@@ -9,6 +9,7 @@ import predictors
 import pyro.contrib.autoguide as autoguide
 import random
 
+
 def base_model(num_sites, num_days, data=None):
     with plate("sites", size=num_sites, dim=-2):
         epsilon = pyro.sample("epsilon", dist.Normal(-5, 15))
@@ -110,6 +111,7 @@ def negative_binomial_log_linear_model(
 
     return accidents
 
+
 def initialize(seed, model, scheduler, model_args):
     pyro.set_rng_seed(seed)
     pyro.clear_param_store()
@@ -117,28 +119,38 @@ def initialize(seed, model, scheduler, model_args):
     svi = SVI(model, guide, scheduler, loss=Trace_ELBO())
     loss = svi.loss(model, guide, **model_args)
     return loss, guide, svi
-    
-def train_with_random_init(model, model_args, kappa, t_0, threshold=1, max_iters = 2000,  loss=Trace_ELBO, lr=1):
+
+
+def train_with_random_init(
+    model,
+    model_args,
+    kappa,
+    t_0,
+    threshold=1,
+    max_iters=2000,
+    loss=Trace_ELBO,
+    lr=1,
+):
     """
     Trains model with guide initialized from the best of a sample of random initialization points. Kappa t_0 are parameters discussd in class
-    Returns list with losses 
+    Returns list with losses
     """
     optimizer = torch.optim.Adam
-    
-    l1 = lambda x: 1/((t_0 + x)** kappa)
-    optim_args = {'lr': lr}
+
+    l1 = lambda x: 1 / ((t_0 + x) ** kappa)
+    optim_args = {"lr": lr}
     optim_params = {
-        'optimizer': optimizer,
-        'optim_args': optim_args,
-        'lr_lambda':l1,
-        }
-    
+        "optimizer": optimizer,
+        "optim_args": optim_args,
+        "lr_lambda": l1,
+    }
+
     scheduler = optim.LambdaLR(optim_params)
-    
+
     best_loss = np.inf
 
     init_seed = random.randint(0, 1000000)
-    for seed in range(init_seed * 100, (init_seed+1) * 100):
+    for seed in range(init_seed * 100, (init_seed + 1) * 100):
         cur_loss, _, _ = initialize(seed, model, scheduler, model_args)
         if cur_loss < best_loss:
             best_seed = seed
@@ -146,19 +158,19 @@ def train_with_random_init(model, model_args, kappa, t_0, threshold=1, max_iters
 
     _, guide, svi = initialize(best_seed, model, scheduler, model_args)
 
-
     losses = [np.inf]
     for i in range(max_iters):
         scheduler.step()
         elbo = svi.step(**model_args)
-        #if np.abs(elbo - losses[-1]) < threshold:
+        # if np.abs(elbo - losses[-1]) < threshold:
         #    break
-        
+
         losses.append(elbo)
-        if i % 50 == 0: 
-            print("In step {} the Elbo is {}".format(i,elbo))
+        if i % 50 == 0:
+            print("In step {} the Elbo is {}".format(i, elbo))
 
     return losses[1:], guide
+
 
 def train(
     model,
@@ -178,7 +190,7 @@ def train(
     pyro.clear_param_store()
     optimizer = torch.optim.Adam
 
-    l1 = lambda x: 1/((t_0 + x)** kappa)
+    l1 = lambda x: 1 / ((t_0 + x) ** kappa)
     optim_args = {"lr": lr}
     optim_params = {
         "optimizer": optimizer,
@@ -201,20 +213,28 @@ def train(
     return losses[1:]
 
 
-def train_log_linear_random_init(accidents, preds, predictor_labels, kappa, t_0, max_iters=2000):
+def train_log_linear_random_init(
+    accidents, preds, predictor_labels, kappa, t_0, max_iters=2000
+):
     preds = predictors.get_some_predictors(preds, predictor_labels)
     preds = torch.Tensor(preds)
     accidents = torch.Tensor(accidents)
     model_args = {
-            'num_sites': accidents.shape[0],
-            'num_days': accidents.shape[1],
-            'num_predictors': preds.shape[2],
-            'predictors': preds,
-            'data': torch.tensor(accidents)
+        "num_sites": accidents.shape[0],
+        "num_days": accidents.shape[1],
+        "num_predictors": preds.shape[2],
+        "predictors": preds,
+        "data": torch.tensor(accidents),
     }
 
+    return train_with_random_init(
+        log_linear_model,
+        kappa=kappa,
+        t_0=t_0,
+        model_args=model_args,
+        max_iters=max_iters,
+    )
 
-    return train_with_random_init(log_linear_model, kappa=kappa, t_0=t_0, model_args=model_args, max_iters=max_iters)
 
 def train_log_linear(
     accidents, preds, predictor_labels, kappa, t_0, max_iters=2000
