@@ -7,8 +7,18 @@ import numpy as np
 import seaborn as sns
 import scipy
 import matplotlib.pyplot as plt
+import datetime
 
-from .. import constants
+FIRST_DAY = datetime.datetime(2014, 1, 1)
+PRED_DICT = {
+    "aadt": 1,
+    "is_intersection": 2,
+    "wind": 3,
+    "precipitation": 4,
+    "snow_depth": 5,
+    "temperature": 6,
+    "weekend": 7,
+}
 
 accident_filename = "../data/accident/processed/manhattan.csv"
 node_filename = "../data/intersection/processed/data.csv"
@@ -22,7 +32,7 @@ data = data[data["node"].isin(list(node_data["nodes"].unique()))]
 
 # Only consider accidents after 2014
 data["datetime"] = pd.to_datetime(data["datetime"])
-data = data[data["datetime"] >= constants.FIRST_DAY]
+data = data[data["datetime"] >= FIRST_DAY]
 
 
 def make_heat_map():
@@ -98,7 +108,7 @@ def plot_betas(beta_samples, pred_names):
     Plots the graphs corresponding for the betas obtained from
     """
     pred_included = [
-        constants.PRED_DICT[pred_name] for pred_name in pred_names
+        PRED_DICT[pred_name] for pred_name in pred_names
     ]
     sorted_values = sorted(zip(pred_included, pred_names), key=lambda x: x[0])
 
